@@ -20,10 +20,10 @@ Example:
 NAME=github-runner-docker-1 \
 URL='<YOUR URL>' \
 TOKEN='<YOUR TOKEN>'; \
-docker run -d --name=$NAME -e URL=$URL -e TOKEN=$TOKEN -e NAME=$NAME ydataai/github-runner:2.169.1
+docker run -d --name=$NAME -e URL=$URL -e TOKEN=$TOKEN -e NAME=$NAME -v /var/run/docker.sock:/var/run/docker.sock ydataai/github-runner:2.169.1
 ```
 
-## Installed Software 
+## Installed Software
 
 - Java 11
 - [NVM](https://github.com/nvm-sh/nvm/blob/master/README.md) (Node Version Manager)

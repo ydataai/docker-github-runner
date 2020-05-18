@@ -7,14 +7,25 @@ ENV DEBCONF_NONINTERACTIVE_SEEN true
 RUN apt-get -qy update && \
     apt-get -qy upgrade && \
     apt-get -qy install \
+        apt-transport-https \
+        ca-certificates \
         curl \
+        gnupg-agent \
         software-properties-common
 
 
 # Add git apt repo, upgrade it and remove unecessary tools
 RUN add-apt-repository ppa:git-core/ppa && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \
+    apt-key fingerprint 0EBFCD88 && \
+    add-apt-repository \
+        "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+        $(lsb_release -cs) \
+        stable" && \
     apt-get -qy upgrade git && \
+    apt-get -qy install docker-ce docker-ce-cli containerd.io && \
     apt-get -qy purge --auto-remove software-properties-common && \
+    apt-get -qy remove docker docker-engine docker.io containerd runc && \
     apt-get clean && \
     rm -r /var/lib/apt/lists/*
 
