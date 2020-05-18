@@ -1,8 +1,10 @@
 #! /bin/bash
 
+CMD="/bin/bash -i -c"
+
 if [ ! -f ".runner" ]; then
     echo "Runner not configured. Configuring..."
-    /bin/bash -i -c "source /home/github/.bashrc && ./config.sh --name $NAME --token $TOKEN --url $URL --work $WORKDIR --replace && exit"
+    $CMD "source /home/github/.bashrc && ./config.sh --name $NAME --token $TOKEN --url $URL --work $WORKDIR --replace && exit"
 fi
 
 echo "Runner configured"
@@ -10,5 +12,5 @@ echo "Runner configured"
 if [ ! -z $@ ]; then
     exec $@
 else
-    ./run.sh > runner.log
+    $CMD "./run.sh > runner.log"
 fi
