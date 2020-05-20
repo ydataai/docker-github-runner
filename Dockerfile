@@ -6,9 +6,9 @@ ENV DEBCONF_NONINTERACTIVE_SEEN true
 
 
 # Update system and install required tools
-RUN apt-get -qy update && \
-    apt-get -qy upgrade && \
-    apt-get -qy install \
+RUN apt-get -qqy update && \
+    apt-get -qqy upgrade && \
+    apt-get -qqy install \
         apt-transport-https \
         ca-certificates \
         curl \
@@ -33,27 +33,23 @@ RUN add-apt-repository ppa:git-core/ppa && \
         "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
         $(lsb_release -cs) \
         stable" && \
-    apt-get -qy remove docker docker-engine docker.io containerd runc && \
-    apt-get -qy update && \
-    apt-get -qy upgrade git && \
-    apt-get -qy install docker-ce docker-ce-cli containerd.io && \
-    apt-get -qy purge --auto-remove software-properties-common && \
-    apt-get clean && \
+    apt-get -qqy remove docker docker-engine docker.io containerd runc && \
+    apt-get -qqy update && \
+    apt-get -qqy upgrade git && \
+    apt-get -qqy install docker-ce docker-ce-cli containerd.io && \
+    apt-get -qqy purge --auto-remove software-properties-common && \
+    apt-get autoclean && \
     rm -r /var/lib/apt/lists/*
 
 
 # Switch to user and setup shell
-ENV USER github
-RUN useradd -m -s /bin/bash -N ${USER} && \
-    usermod -aG docker,root ${USER}
-USER ${USER}
-WORKDIR /home/${USER}
+WORKDIR /github-runner
 SHELL ["/bin/bash", "--login", "-i", "-c"]
 
 
 # Install nvm
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash && \
-    source /home/${USER}/.bashrc && \
+    source /root/.bashrc && \
     nvm install v12.14.1
 
 
@@ -69,14 +65,15 @@ RUN curl -O -L https://github.com/actions/runner/releases/download/v${runner_ver
     rm -rf actions-runner-linux-x64-${runner_version}.tar.gz
 
 
-COPY --chown=github:users entrypoint.sh .
+COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
-
-ENV NAME="github-runner-docker"
+ENV RUNNER_ALLOW_RUNASROOT true
+ENV LABELS "ubuntu-18.04"
+ENV NAME "github-runner-docker"
 ENV URL ""
 ENV TOKEN ""
-ENV WORKDIR="_work"
+ENV WORKDIR=""
 
 
 ENTRYPOINT [ "./entrypoint.sh" ]

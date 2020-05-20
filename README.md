@@ -17,10 +17,12 @@ The `TAG` latest exists and points to the latest stable release in the [runner r
 Example:
 
 ```bash
+LABELS=' '
 NAME=github-runner-docker-1 \
 URL='<YOUR URL>' \
-TOKEN='<YOUR TOKEN>'; \
-docker run -d --restart=always --name=$NAME -e URL=$URL -e TOKEN=$TOKEN -e NAME=$NAME -v /var/run/docker.sock:/var/run/docker.sock ydataai/github-runner:v2.262.1
+TOKEN='<YOUR TOKEN>' \
+WORKDIR='/tmp/github'; \
+docker run -d --restart=always --name=$NAME -e LABELS=$LABELS -e URL=$URL -e TOKEN=$TOKEN -e NAME=$NAME -e WORKDIR=$WORKDIR -v $WORKDIR:$WORKDIR -v /var/run/docker.sock:/var/run/docker.sock ydata/github-runner:2.262.1
 ```
 
 ## Installed Software
